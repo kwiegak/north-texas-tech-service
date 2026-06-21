@@ -12,27 +12,16 @@ public class ConsultationController {
 
     private final ConsultationService consultationService;
 
-    public ConsultationController(
-            ConsultationService consultationService) {
-
-        this.consultationService =
-                consultationService;
-
-        System.out.println(
-                "ConsultationController loaded");
+    public ConsultationController(ConsultationService consultationService) {
+        this.consultationService = consultationService;
+        System.out.println("ConsultationController loaded");
     }
 
     @PostMapping
-    public ResponseEntity<String>
-    submitConsultation(
-            @RequestBody
-            ConsultationRequest request) {
+    public ResponseEntity<String> submitConsultation(@RequestBody ConsultationRequest request) {
 
-        consultationService
-                .submitConsultation(request);
-
-        return ResponseEntity.ok(
-                "Consultation submitted successfully");
+        consultationService.submitConsultation(request);
+        return ResponseEntity.ok("Consultation submitted successfully");
     }
 
     @GetMapping("/test")
