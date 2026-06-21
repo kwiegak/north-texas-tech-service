@@ -39,9 +39,9 @@ jobs:
 
       - name: Copy JAR To EC2
         run: |
-          scp -i ~/.ssh/key.pem \
-          build/libs/*.jar \
-          ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ec2-user/
+          scp -v -i ~/.ssh/key.pem \
+            build/libs/*.jar \
+            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ec2-user/
 
       - name: Deploy and Restart Service
         run: |
