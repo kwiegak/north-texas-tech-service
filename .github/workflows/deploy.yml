@@ -43,8 +43,8 @@ jobs:
             build/libs/*.jar \
             ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ec2-user/
 
-      - name: Deploy and Restart Service
+      - name: Restart Service
         run: |
           ssh -i ~/.ssh/key.pem \
           ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
-          "mv /home/ec2-user/*.jar /home/ec2-user/app.jar && sudo systemctl restart northtexastechservice"
+          "sudo systemctl restart northtexastechservice"
