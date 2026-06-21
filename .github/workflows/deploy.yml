@@ -1,0 +1,50 @@
+name: Deploy API
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Grant Gradle Permissions
+        run: chmod +x gradlew
+
+      - name: Build Application
+        run: ./gradlew build
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/key.pem
+
+          chmod 600 ~/.ssh/key.pem
+
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Copy JAR To EC2
+        run: |
+          scp -i ~/.ssh/key.pem \
+          build/libs/*.jar \
+          ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ec2-user/app.jar
+
+      - name: Restart Service
+        run: |
+          ssh -i ~/.ssh/key.pem \
+          ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
+          "sudo systemctl restart northtexastechservice"
